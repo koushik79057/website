@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Happy Birthday, Sister</title>
+
+<!--
+  ============================================================
+  EDIT ME — quick customization guide
+  ============================================================
+  1. Search for "SISTER_NAME" and replace with her real name.
+  2. Search for "YOUR_NAME" and replace with your name (the sender).
+  3. Edit the letter text inside <div class="letter-body">.
+  4. Drop these files next to this index.html:
+       images/photo1.jpg  ... images/photo6.jpg
+       music/birthday.mp3
+  5. Push to GitHub, enable Pages (Settings → Pages → main branch),
+     done — this file alone is the whole site.
+  ============================================================
+-->
+
+<style>
+  :root{
+    --ink:#2b1420;
+    --rose-deep:#7a2440;
+    --rose:#c1487a;
+    --rose-light:#e28aa9;
+    --blush:#f8dce6;
+    --cream:#fff8f5;
+    --gold:#c9a46a;
+    --gold-soft:#e6d3ab;
+    --shadow: 0 20px 50px -20px rgba(122,36,64,0.45);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,.script{
+    font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;
+  }
+  .script{
+    font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;
+  }
+  ::selection{ background:var(--rose); color:#fff; }
+
+  /* ---------- ambient petals ---------- */
+  #petals{
+    position:fixed; inset:0; pointer-events:none; z-index:5; overflow:hidden;
+  }
+  .petal{
+    position:absolute; top:-5%;
+    width:14px; height:14px;
+    background:radial-gradient(circle at 30% 30%, var(--rose-light), var(--rose));
+    border-radius:70% 30% 60% 40% / 60% 40% 60% 40%;
+    opacity:.75;
+    animation-name:fall,sway;
+    animation-timing-function:linear, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+  }
+  @keyframes fall{
+    to{ transform:translateY(115vh); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0; }
+    50%{ margin-left:40px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .petal{ display:none; }
+  }
+
+  /* ---------- envelope intro ---------- */
+  #envelope-screen{
+    position:fixed; inset:0; z-index:100;
+    background:linear-gradient(160deg, var(--rose-deep), var(--ink) 120%);
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    transition:transform .9s cubic-bezier(.7,0,.3,1), opacity .9s ease;
+  }
+  #envelope-screen.open{
+    transform:translateY(-100%);
+    opacity:0;
+    pointer-events:none;
+  }
+  .envelope{
+    width:220px; height:150px; position:relative; cursor:pointer;
+    filter:drop-shadow(0 25px 40px rgba(0,0,0,0.35));
+  }
+  .env-body{
+    position:absolute; inset:0;
+    background:var(--blush);
+    border-radius:6px;
+  }
+  .env-flap{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background:var(--rose);
+    clip-path:polygon(0 0, 50% 55%, 100% 0);
+    border-radius:6px 6px 0 0;
+    transform-origin:top;
+    transition:transform .6s cubic-bezier(.6,0,.4,1);
+  }
+  .envelope.opened .env-flap{ transform:rotateX(180deg); }
+  .env-seal{
+    position:absolute; top:42%; left:50%; transform:translate(-50%,-50%);
+    width:34px; height:34px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; color:var(--rose-deep); font-weight:700;
+    box-shadow:0 4px 10px rgba(0,0,0,.3);
+    transition:opacity .3s ease;
+  }
+  .envelope.opened .env-seal{ opacity:0; }
+  #envelope-screen p{
+    color:var(--blush); margin-top:28px; letter-spacing:.12em;
+    font-size:12px; text-transform:uppercase; opacity:.85;
+  }
+  #envelope-screen .tap-hint{ animation:pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
+
+  /* ---------- layout helpers ---------- */
+  section{
+    position:relative; z-index:2;
+    padding:80px 22px;
+    max-width:560px; margin:0 auto;
+  }
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:.22em; font-size:11px;
+    color:var(--rose-deep); font-weight:600; opacity:.75;
+  }
+
+  /* ---------- hero ---------- */
+  #hero{
+    min-height:100svh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    background:
+      radial-gradient(circle at 50% 0%, var(--blush), transparent 60%),
+      linear-gradient(180deg, var(--cream), #fff);
+    padding-top:60px;
+  }
+  .balloons{
+    display:flex; gap:14px; justify-content:center; margin-bottom:18px;
+  }
+  .balloons svg{ width:46px; animation:bob 3.4s ease-in-out infinite; }
+  .balloons svg:nth-child(2){ animation-delay:.5s; width:56px; }
+  .balloons svg:nth-child(3){ animation-delay:1s; }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-14px); }
+  }
+  #hero h1{
+    font-size:clamp(2.1rem, 9.5vw, 3.1rem);
+    margin:0;
+    color:var(--rose-deep);
+    line-height:1.2;
+  }
+
+  .candle-wrap{ margin-top:6px; }
+  .candle{ width:90px; cursor:pointer; user-select:none; -webkit-user-select:none; }
+  .flame{
+    transform-origin:50% 100%;
+    animation:flicker 1.4s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,100%{ transform:scale(1) rotate(-2deg); }
+    50%{ transform:scale(1.08) rotate(2deg); }
+  }
+  .candle.blown .flame{ opacity:0; animation:none; }
+  .candle-caption{
+    margin-top:10px; font-size:12px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--rose-deep); opacity:.65;
+  }
+
+  #confetti-burst{
+    position:fixed; inset:0; z-index:60; pointer-events:none;
+  }
+  .confetti-piece{
+    position:absolute; width:8px; height:14px; opacity:0;
+  }
+
+  /* ---------- quote ---------- */
+  #quote{ text-align:center; }
+  #quote blockquote{
+    margin:0; font-family:Georgia,serif; font-style:italic;
+    font-size:clamp(1.1rem,4.5vw,1.35rem);
+    color:var(--rose-deep); line-height:1.5;
+  }
+  #quote .rule{
+    width:40px; height:2px; background:var(--gold);
+    margin:22px auto; border:none;
+  }
+
+  /* ---------- gallery ---------- */
+  #gallery h2{ text-align:center; color:var(--rose-deep); font-size:1.7rem; margin-bottom:8px;}
+  #gallery .sub{ text-align:center; margin-bottom:34px; opacity:.6; font-size:13px; letter-spacing:.05em;}
+  .grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:14px;
+  }
+  .grid figure{
+    margin:0; position:relative; border-radius:14px; overflow:hidden;
+    aspect-ratio:1/1.1; box-shadow:var(--shadow);
+    transform:rotate(var(--r,0deg));
+  }
+  .grid figure:nth-child(1){ --r:-2deg; }
+  .grid figure:nth-child(2){ --r:1.5deg; margin-top:18px; }
+  .grid figure:nth-child(3){ --r:1deg; }
+  .grid figure:nth-child(4){ --r:-1.5deg; margin-top:18px;}
+  .grid figure:nth-child(5){ --r:-1deg; }
+  .grid figure:nth-child(6){ --r:2deg; margin-top:18px;}
+  .grid img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .5s ease;
+  }
+  .grid figure:active img{ transform:scale(1.06); }
+  .grid figure::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 60%, rgba(122,36,64,.35));
+    pointer-events:none;
+  }
+
+  #lightbox{
+    position:fixed; inset:0; z-index:90; background:rgba(43,20,32,.92);
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  #lightbox.show{ display:flex; }
+  #lightbox img{ max-width:100%; max-height:80vh; border-radius:10px; box-shadow:0 30px 60px rgba(0,0,0,.5); }
+  #lightbox .close{
+    position:absolute; top:22px; right:22px; width:38px; height:38px;
+    border-radius:50%; background:rgba(255,255,255,.12); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:20px;
+    border:none; cursor:pointer;
+  }
+
+  /* ---------- letter ---------- */
+  #letter{
+    background:linear-gradient(180deg,#fff, var(--blush));
+  }
+  .letter-card{
+    background:var(--cream);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:38px 26px;
+    position:relative;
+  }
+  .letter-card::before{
+    content:"";
+    position:absolute; top:-16px; left:50%; transform:translateX(-50%);
+    width:36px; height:36px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold));
+    box-shadow:0 6px 14px rgba(0,0,0,.25);
+  }
+  .letter-card h2{
+    text-align:center; color:var(--rose-deep); font-size:1.4rem; margin:6px 0 22px;
+  }
+  .letter-body p{
+    font-size:15px; line-height:1.85; color:var(--ink); opacity:.88;
+    margin:0 0 16px;
+  }
+  .letter-sign{
+    text-align:right; margin-top:26px;
+    font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;
+    font-size:1.6rem; color:var(--rose);
+  }
+
+  /* ---------- closing / footer ---------- */
+  #closing{ text-align:center; }
+  #closing h2{
+    color:var(--rose-deep); font-size:clamp(1.6rem,7vw,2.1rem); margin-bottom:10px;
+  }
+  #closing p{ opacity:.7; font-size:14px; max-width:320px; margin:0 auto 30px; line-height:1.7;}
+  .heart-row{ display:flex; gap:10px; justify-content:center; margin-bottom:10px;}
+  .heart-row svg{ width:18px; height:18px; }
+  footer{
+    text-align:center; padding:30px 20px 120px; font-size:11px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--rose-deep); opacity:.5;
+  }
+
+  /* ---------- music player ---------- */
+  #player{
+    position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+    z-index:80;
+    background:var(--rose-deep);
+    color:var(--blush);
+    border-radius:50px;
+    padding:10px 18px 10px 10px;
+    display:flex; align-items:center; gap:10px;
+    box-shadow:0 15px 30px rgba(122,36,64,.4);
+    max-width:92vw;
+  }
+  #playBtn{
+    width:38px; height:38px; border-radius:50%; border:none;
+    background:var(--gold); color:var(--rose-deep);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex:0 0 auto;
+  }
+  #playBtn svg{ width:16px; height:16px; }
+  .bars{ display:flex; align-items:flex-end; gap:3px; height:16px; }
+  .bars span{
+    width:3px; background:var(--blush); border-radius:2px;
+    height:4px; animation:eq 1s ease-in-out infinite;
+    opacity:.9;
+  }
+  .bars span:nth-child(2){ animation-delay:.15s; }
+  .bars span:nth-child(3){ animation-delay:.3s; }
+  .bars span:nth-child(4){ animation-delay:.45s; }
+  #player.playing .bars span{ animation-play-state:running; }
+  #player:not(.playing) .bars span{ animation-play-state:paused; height:4px; }
+  @keyframes eq{
+    0%,100%{ height:4px; } 50%{ height:16px; }
+  }
+  #player .label{ font-size:11px; letter-spacing:.05em; white-space:nowrap; opacity:.85; }
+
+  @media (min-width:600px){
+    section{ padding:110px 22px; }
+    .grid{ gap:18px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+
+<!-- ============ ENVELOPE INTRO ============ -->
+<div id="envelope-screen">
+  <div class="envelope" id="envelope">
+    <div class="env-body"></div>
+    <div class="env-flap"></div>
+    <div class="env-seal">S</div>
+  </div>
+  <p class="tap-hint">Tap to open your card</p>
+</div>
+
+<div id="confetti-burst"></div>
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="balloons">
+    <svg viewBox="0 0 40 70"><ellipse cx="20" cy="20" rx="18" ry="20" fill="#e28aa9"/><line x1="20" y1="40" x2="20" y2="66" stroke="#c1487a" stroke-width="1.5"/></svg>
+    <svg viewBox="0 0 40 70"><ellipse cx="20" cy="20" rx="18" ry="20" fill="#c9a46a"/><line x1="20" y1="40" x2="20" y2="66" stroke="#7a2440" stroke-width="1.5"/></svg>
+    <svg viewBox="0 0 40 70"><ellipse cx="20" cy="20" rx="18" ry="20" fill="#c1487a"/><line x1="20" y1="40" x2="20" y2="66" stroke="#7a2440" stroke-width="1.5"/></svg>
+  </div>
+  <h1>Happy Birthday<br>My Sister</h1>
+
+  <div class="candle-wrap">
+    <svg class="candle" id="candle" viewBox="0 0 80 140" xmlns="http://www.w3.org/2000/svg">
+      <g class="flame" id="flame">
+        <ellipse cx="40" cy="18" rx="10" ry="16" fill="#ffcf7a"/>
+        <ellipse cx="40" cy="22" rx="5.5" ry="9" fill="#ff8a5c"/>
+      </g>
+      <rect x="37" y="30" width="6" height="10" fill="#8a6b3a"/>
+      <rect x="20" y="40" width="40" height="90" rx="6" fill="#f2b5c9"/>
+      <rect x="20" y="55" width="40" height="8" fill="#e28aa9"/>
+      <rect x="20" y="90" width="40" height="8" fill="#e28aa9"/>
+    </svg>
+    <div class="candle-caption" id="candleCaption">tap the candle to make a wish</div>
+  </div>
+</section>
+
+<!-- ============ QUOTE ============ -->
+<section id="quote">
+  <blockquote>"Of all the people I've been lucky enough to grow up with, none has taught me more about kindness, laughter, and showing up than you."</blockquote>
+  <hr class="rule">
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section id="gallery">
+  <h2>Our favorite moments</h2>
+  <p class="sub">a few frames worth keeping</p>
+  <div class="grid" id="galleryGrid">
+    <figure><img src="images/photo1.jpg" alt="Memory 1" loading="lazy"></figure>
+    <figure><img src="images/photo2.jpg" alt="Memory 2" loading="lazy"></figure>
+    <figure><img src="images/photo3.jpg" alt="Memory 3" loading="lazy"></figure>
+    <figure><img src="images/photo4.jpg" alt="Memory 4" loading="lazy"></figure>
+    <figure><img src="images/photo5.jpg" alt="Memory 5" loading="lazy"></figure>
+    <figure><img src="images/photo6.jpg" alt="Memory 6" loading="lazy"></figure>
+  </div>
+</section>
+
+<div id="lightbox">
+  <button class="close" id="lightboxClose">&times;</button>
+  <img id="lightboxImg" src="" alt="Enlarged memory">
+</div>
+
+<!-- ============ LETTER ============ -->
+<section id="letter">
+  <div class="letter-card">
+    <h2>A note, just for you</h2>
+    <div class="letter-body">
+      <p>Dear SISTER_NAME,</p>
+      <p>🎉 Happy birthday to you, dear cousin 🎂 Wishing you a very happy and joyful birthday.</p>
+      <p>On this special day, I want to sincerely wish you success, peace, and happiness in every step of your life. May this new year of your life bring you new opportunities, growth, and wonderful achievements.</p>
+      <p>Keep moving forward with confidence and positivity. I hope all your dreams and goals come true and your journey becomes even more meaningful and successful.</p>
+      <p>Stay healthy, stay blessed, and keep shining in your own way.</p>
+      <p>Happy Birthday 🎉🎁</p>
+    </div>
+    <div class="letter-sign">YOUR_NAME</div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section id="closing">
+  <div class="heart-row">
+    <svg viewBox="0 0 24 24" fill="#c1487a"><path d="M12 21s-7.5-4.6-10-9C.3 8.6 2 5 5.5 5c2 0 3.4 1.1 4.5 2.7C11.1 6.1 12.5 5 14.5 5 18 5 19.7 8.6 22 12c-2.5 4.4-10 9-10 9z"/></svg>
+    <svg viewBox="0 0 24 24" fill="#c9a46a"><path d="M12 21s-7.5-4.6-10-9C.3 8.6 2 5 5.5 5c2 0 3.4 1.1 4.5 2.7C11.1 6.1 12.5 5 14.5 5 18 5 19.7 8.6 22 12c-2.5 4.4-10 9-10 9z"/></svg>
+    <svg viewBox="0 0 24 24" fill="#c1487a"><path d="M12 21s-7.5-4.6-10-9C.3 8.6 2 5 5.5 5c2 0 3.4 1.1 4.5 2.7C11.1 6.1 12.5 5 14.5 5 18 5 19.7 8.6 22 12c-2.5 4.4-10 9-10 9z"/></svg>
+  </div>
+  <h2>Here's to you</h2>
+  <p>Play the song below, scroll back through the photos whenever you miss home, and know this little page will always be here.</p>
+</section>
+
+<footer>made with love by YOUR_NAME</footer>
+
+<!-- ============ MUSIC PLAYER ============ -->
+<div id="player">
+  <button id="playBtn" aria-label="Play birthday song">
+    <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+  </button>
+  <div class="bars"><span></span><span></span><span></span><span></span></div>
+  <span class="label">birthday song</span>
+</div>
+<audio id="audio" src="music/birthday.mp3" loop preload="none"></audio>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- ambient petals ---------- */
+  var petalField = document.getElementById('petals');
+  var petalCount = window.innerWidth < 600 ? 10 : 16;
+  for (var i = 0; i < petalCount; i++){
+    var p = document.createElement('div');
+    p.className = 'petal';
+    var left = Math.random() * 100;
+    var duration = 9 + Math.random() * 8;
+    var delay = Math.random() * 12;
+    var swayDur = 3 + Math.random() * 2;
+    var scale = 0.6 + Math.random() * 0.9;
+    p.style.left = left + 'vw';
+    p.style.animationDuration = duration + 's, ' + swayDur + 's';
+    p.style.animationDelay = delay + 's, 0s';
+    p.style.transform = 'scale(' + scale + ')';
+    petalField.appendChild(p);
+  }
+
+  /* ---------- envelope intro ---------- */
+  var envScreen = document.getElementById('envelope-screen');
+  var envelope = document.getElementById('envelope');
+  envelope.addEventListener('click', openEnvelope);
+  function openEnvelope(){
+    envelope.classList.add('opened');
+    setTimeout(function(){
+      envScreen.classList.add('open');
+    }, 500);
+  }
+
+  /* ---------- candle wish + confetti ---------- */
+  var candle = document.getElementById('candle');
+  var caption = document.getElementById('candleCaption');
+  var blownOnce = false;
+  candle.addEventListener('click', function(){
+    if (blownOnce) return;
+    blownOnce = true;
+    candle.classList.add('blown');
+    caption.textContent = 'wish made ✦';
+    burstConfetti();
+  });
+
+  var confettiHost = document.getElementById('confetti-burst');
+  var confettiColors = ['#c1487a','#e28aa9','#c9a46a','#f8dce6','#7a2440'];
+  function burstConfetti(){
+    var rect = candle.getBoundingClientRect();
+    var originX = rect.left + rect.width/2;
+    var originY = rect.top;
+    for (var i = 0; i < 26; i++){
+      var piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = originX + 'px';
+      piece.style.top = originY + 'px';
+      piece.style.background = confettiColors[i % confettiColors.length];
+      piece.style.borderRadius = (Math.random() > 0.5) ? '50%' : '2px';
+      confettiHost.appendChild(piece);
+
+      var angle = (Math.random() * Math.PI) - Math.PI/2 - Math.PI/2;
+      var distance = 80 + Math.random() * 160;
+      var dx = Math.cos(angle) * distance;
+      var dy = Math.sin(angle) * distance - 60;
+      var rot = Math.random() * 720 - 360;
+      var dur = 900 + Math.random() * 700;
+
+      piece.animate([
+        { transform:'translate(0,0) rotate(0deg)', opacity:1 },
+        { transform:'translate(' + dx + 'px,' + (dy+260) + 'px) rotate(' + rot + 'deg)', opacity:0 }
+      ], { duration: dur, easing:'cubic-bezier(.2,.7,.4,1)', fill:'forwards' });
+
+      (function(el, life){
+        setTimeout(function(){ el.remove(); }, life + 50);
+      })(piece, dur);
+    }
+  }
+
+  /* ---------- gallery lightbox ---------- */
+  var grid = document.getElementById('galleryGrid');
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+  grid.addEventListener('click', function(e){
+    var img = e.target.closest('img');
+    if (!img) return;
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.classList.add('show');
+  });
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function(e){
+    if (e.target === lightbox) closeLightbox();
+  });
+  function closeLightbox(){
+    lightbox.classList.remove('show');
+    lightboxImg.src = '';
+  }
+
+  /* ---------- music player ---------- */
+  var audio = document.getElementById('audio');
+  var player = document.getElementById('player');
+  var playBtn = document.getElementById('playBtn');
+  var playIcon = document.getElementById('playIcon');
+  var pauseIcon = document.getElementById('pauseIcon');
+
+  playBtn.addEventListener('click', function(){
+    if (audio.paused){
+      audio.play().catch(function(){ /* file may be missing until added */ });
+      player.classList.add('playing');
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+    } else {
+      audio.pause();
+      player.classList.remove('playing');
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
